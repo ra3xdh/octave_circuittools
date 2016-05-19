@@ -1,0 +1,5 @@
+spiceraw >> Datafiles
+SPICE
+ subs_spice_netslit
+ subs_qucs_netslit
+ subs_spice_modelcard
