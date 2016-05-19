@@ -9,4 +9,6 @@ raw2any
 *~
 *.user
 *.oct
+*.cir
+netlist.txt
 
