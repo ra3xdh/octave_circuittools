@@ -30,26 +30,29 @@ DEFUN_DLD (subs_spice_netlist, args, nargout,
 	    retval(0) = octave_value(false);
 	    return retval;
 	}
-	while (!feof(src)) {
-	    size_t n = NETLIST_MAXLEN;
-	    char *lin = (char *) malloc(NETLIST_MAXLEN*sizeof(char));
-	    getline(&lin,&n,src);
+
+	size_t n = NETLIST_MAXLEN;
+	char *lin = (char *) malloc(NETLIST_MAXLEN*sizeof(char));
+	while (getline(&lin,&n,src)>0) {
 	    char *start = lin;
 	    while (isspace(*start)) start++;
 	    if (*start=='*') continue; // Comment
 	    if (!strncasecmp(start,".PARAM",6)) { // Parameter
 		start += 6; // Start of param;
 		while (isspace(*start)) start++;
-		if (!strncasecmp(start,param,strlen(param))) {
-		    start += strlen(param);
+		char *p_end = start;
+		int p_len = 0;
+		while ((isalpha(*p_end))||(isdigit(*p_end))) p_end++,p_len++;
+		if (!strncasecmp(start,param,p_len)) {
+		    start += p_len;
 		    while ((isspace(*start))||(*start=='=')) start++;
 		    sprintf(start,"%g\n",p_value);
 		    printf("%s",lin); // Directive
 		}
 	    }
 	    fputs(lin,dst);
-	    free(lin);
 	}
+	free(lin);
 	fclose(src);
 	fclose(dst);
 
