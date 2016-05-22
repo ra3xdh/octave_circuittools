@@ -2,7 +2,7 @@ MKOCTFILE=mkoctfile
 
 # CXXFLAGS = -std=c++0x 
 
-FILES = subs_spice_netlist.oct
+FILES = subs_spice_netlist.oct subs_qucs_netlist.oct
 
 all: $(FILES)
 

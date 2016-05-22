@@ -11,4 +11,5 @@ raw2any
 *.oct
 *.cir
 netlist.txt
+*.swp
 
