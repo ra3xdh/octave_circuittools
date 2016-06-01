@@ -35,23 +35,30 @@ DEFUN_DLD (subs_spice_modelcard, args, nargout,
 
 	size_t n = NETLIST_MAXLEN;
 	char *lin = (char *) malloc(NETLIST_MAXLEN*sizeof(char));
+	bool continue_parsing = false;
 	while (getline(&lin,&n,src)>0) {
 	    char *start = lin;
 	    int pos = 0;
+	    if (*start!='+') continue_parsing = false; // Contunuation
+	    else start++,pos++;
+
 	    while (isspace(*start)) start++,pos++;
 	    if (*start=='*') continue; // Comment
-	    if (!strncasecmp(start,".MODEL",6)) { // Parameters are in Equations
-		start += 6; // Start of Eqn;
-		pos += 6;
-		char name[32];
-		while (isspace(*start)) start++,pos++;
-		char *tmp=name;
-		while (!isspace(*start)) *tmp++ = *start++,pos++;
-		*tmp++ = '\0';
-		pos++;
-		if (strcasecmp(name,model)) continue;
+	    if ((!strncasecmp(start,".MODEL",6))||continue_parsing) { // Modelcard found
+		if (!continue_parsing) {
+		    start += 6; // Start of modelcard;
+		    pos += 6;
+		    char name[32];
+		    while (isspace(*start)) start++,pos++;
+		    char *tmp=name;
+		    while (!isspace(*start)) *tmp++ = *start++,pos++;
+		    *tmp++ = '\0';
+		    if (strcasecmp(name,model)) continue;
+		    continue_parsing = true;
+                    while (*start!='(') start++,pos++;
+		    start++,pos++;
+		}
 		
-		while (*start!='(') *start++,pos++;
 		//while ((isalpha(*start))||(isdigit(*start))) start++,pos++;
 		while (isspace(*start)) start++,pos++;
 		while (*start) {
@@ -67,7 +74,7 @@ DEFUN_DLD (subs_spice_modelcard, args, nargout,
 	            while (*p_end!=' ') p_end++,v_len++;
 		    if (!strcasecmp(n_par,param)) {
 			char *new_lin = (char *)malloc((strlen(lin)+32)*sizeof(char));
-			strncpy(new_lin,lin,pos-1);
+			strncpy(new_lin,lin,pos);
 			new_lin[pos]='\0';
 			char ss[16];
 			sprintf(ss,"%g",p_value); // Substitute new value
@@ -79,6 +86,7 @@ DEFUN_DLD (subs_spice_modelcard, args, nargout,
 			//free(lin);
 			//lin = new_lin;
 			break;
+			continue_parsing = false;
 		    }
 		    pos += v_len;
 		    start=p_end;
