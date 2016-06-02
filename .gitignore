@@ -12,4 +12,6 @@ raw2any
 *.cir
 netlist.txt
 *.swp
+*.net
+*.sch
 
