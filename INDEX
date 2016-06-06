@@ -1,5 +1,9 @@
-spiceraw >> Datafiles
+circuittools >> Datafiles
 SPICE
  subs_spice_netslit
  subs_qucs_netslit
  subs_spice_modelcard
+ sch_to_netlist
+ run_qucsator
+ get_spice_datasets
+
