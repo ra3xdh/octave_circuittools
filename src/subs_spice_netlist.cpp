@@ -36,7 +36,10 @@ DEFUN_DLD (subs_spice_netlist, args, nargout,
 	while (getline(&lin,&n,src)>0) {
 	    char *start = lin;
 	    while (isspace(*start)) start++;
-	    if (*start=='*') continue; // Comment
+	    if (*start=='*') { // Comment
+		fputs(lin,dst);
+		continue;
+	    }
 	    if (!strncasecmp(start,".PARAM",6)) { // Parameter
 		start += 6; // Start of param;
 		while (isspace(*start)) start++;

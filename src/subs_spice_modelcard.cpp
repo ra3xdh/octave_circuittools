@@ -43,7 +43,10 @@ DEFUN_DLD (subs_spice_modelcard, args, nargout,
 	    else start++,pos++;
 
 	    while (isspace(*start)) start++,pos++;
-	    if (*start=='*') continue; // Comment
+	    if (*start=='*') { // Comment
+		fputs(lin,dst);
+		continue;
+	    }
 	    if ((!strncasecmp(start,".MODEL",6))||continue_parsing) { // Modelcard found
 		if (!continue_parsing) {
 		    start += 6; // Start of modelcard;
